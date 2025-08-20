@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Typing Practice Tool</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Practice typing skills in Hindi, English and more!">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Roboto', Arial, sans-serif;
+            background: linear-gradient(135deg, #1976d2 0%, #ffd600 100%);
+            min-height: 100vh;
+            color: #222;
+        }
+        .main-header {
+            text-align: center;
+            margin-top: 60px;
+            margin-bottom: 15px;
+            color: #fff;
+            text-shadow: 0 0 20px #ffd600, 0 0 12px #1976d2, 0 3px 24px #1976d2aa;
+            font-size: 2.8rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            animation: glowTitle 2s infinite alternate;
+        }
+        @keyframes glowTitle {
+            0% { text-shadow: 0 0 20px #ffd600, 0 0 12px #1976d2; }
+            100% { text-shadow: 0 0 40px #ff6f00, 0 0 32px #1976d2; }
+        }
+        .tagline {
+            text-align: center;
+            font-size: 1.2rem;
+            color: #fff;
+            margin-bottom: 32px;
+            text-shadow: 0 2px 8px #1976d2b6;
+        }
+        .options-block {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-bottom: 60px;
+        }
+        .glow-btn {
+            padding: 30px 40px;
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #fff;
+            background: linear-gradient(135deg, #43a047, #ffd600, #ff5722);
+            border: none;
+            border-radius: 18px;
+            box-shadow: 0 0 18px #ffd600b6, 0 0 12px #ff6f00b8;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            text-shadow: 0 0 8px #fffbe6;
+            position: relative;
+            overflow: hidden;
+        }
+        .glow-btn:hover {
+            transform: scale(1.07);
+            box-shadow: 0 0 44px #ffd600, 0 0 20px #ff5722;
+        }
+        .glow-btn:active {
+            transform: scale(0.99);
+        }
+        .desc-text {
+            max-width: 480px;
+            margin: 0 auto 24px auto;
+            text-align: center;
+            color: #fffde7;
+            font-size: 1rem;
+            line-height: 1.6;
+            text-shadow: 0 2px 8px #1976d2b6;
+        }
+        .ad-block {
+            width: 100%;
+            max-width: 400px;
+            margin: 50px auto 0 auto;
+            background: #fffbe6;
+            border-radius: 8px;
+            text-align: center;
+            padding: 10px 0;
+            color: #7c6f00;
+            font-size: 1rem;
+            box-shadow: 0 0 12px #ffd60099;
+            border: 1px dashed #ffc107;
+        }
+        .footer {
+            text-align: center;
+            margin: 38px 0 8px 0;
+            color: #fffde7;
+            font-size: 15px;
+            text-shadow: 0 2px 8px #1976d2b6;
+        }
+        /* Practice Section Styles */
+        .container {
+            max-width: 650px;
+            margin: 35px auto 0 auto;
+            background: #fff;
+            border-radius: 18px;
+            padding: 30px 20px 18px 20px;
+            box-shadow: 0 2px 16px rgba(25, 118, 210, 0.10);
+            display: none;
+        }
+        .tab-bar {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 14px;
+            justify-content: center;
+        }
+        .tab-btn {
+            background: var(--secondary, #f5f5f5);
+            border: 1px solid #bdbdbd;
+            border-radius: 7px 7px 0 0;
+            padding: 10px 22px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .tab-btn.active {
+            background: #ffd600;
+            color: #1976d2;
+            border-color: #ffd600;
+            box-shadow: 0 0 10px #ffd600b2;
+        }
+        .flex-row {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 18px;
+            justify-content: center;
+        }
+        select, button {
+            padding: 8px 12px;
+            font-size: 1rem;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            outline: none;
+        }
+        button {
+            background: var(--primary, #1976d2);
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        button:hover {
+            background: #115293;
+        }
+        .lesson-list {
+            margin: 14px 0 18px 0;
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .lesson-item {
+            background: var(--secondary, #f5f5f5);
+            border-radius: 5px;
+            padding: 8px 14px;
+            cursor: pointer;
+            font-weight: 500;
+            border: 1px solid #ddd;
+            transition: background .2s;
+        }
+        .lesson-item.active {
+            background: #ffd600;
+            border-color: #1976d2;
+            color: #1976d2;
+            box-shadow: 0 0 8px #ffd60081;
+        }
+        .practice-block, .paragraph-block {
+            margin: 22px 0;
+        }
+        .practice-text, .paragraph-text {
+            background: #f3f3f3;
+            padding: 15px;
+            font-size: 1.2rem;
+            border-radius: 7px;
+            font-family: monospace;
+            min-height: 40px;
+            margin-bottom: 7px;
+            letter-spacing: 2px;
+        }
+        .input-area, .paragraph-input {
+            width: 100%;
+            padding: 11px;
+            font-size: 1.1rem;
+            border-radius: 6px;
+            border: 1.5px solid #1976d2;
+            margin-bottom: 8px;
+            font-family: monospace;
+        }
+        .stats-block, .paragraph-stats {
+            display: flex;
+            gap: 30px;
+            margin-bottom: 10px;
+            justify-content: center;
+        }
+        .stat {
+            background: var(--secondary, #f5f5f5);
+            padding: 6px 16px;
+            border-radius: 6px;
+            font-size: 1rem;
+        }
+        .progress-bar {
+            width: 100%;
+            background: #eee;
+            border-radius: 6px;
+            height: 12px;
+            margin-bottom: 17px;
+            overflow: hidden;
+        }
+        .progress {
+            height: 100%;
+            background: var(--primary, #1976d2);
+            transition: width 0.3s;
+        }
+        .level-status {
+            font-weight: 500;
+            font-size: 1.1rem;
+            margin-bottom: 9px;
+            text-align: center;
+            color: #1976d2;
+        }
+        .result-summary {
+            background: #e3f2fd;
+            padding: 13px;
+            border-radius: 7px;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        .small-ad-block {
+            width: 100%;
+            margin: 8px auto 0 auto;
+            background: #fffbe6;
+            border-radius: 8px;
+            text-align: center;
+            padding: 6px 0; color: #7c6f00;font-size: 0.98rem;border: 1px dashed #ffc107;
+        }
+        .paragraph-text span {padding: 2px 6px;border-radius: 4px;transition: background 0.2s, color 0.2s;}
+        .paragraph-text .active-word {background: #ffd600;color: #1976d2;box-shadow: 0 0 10px #ffd60066;font-weight: bold;}
+        .paragraph-text .correct-word {background: #1976d2;color: #fff;}
+        .paragraph-text .wrong-word {background: #e57373;color: #fff;}
+        .lang-select-bar {display: flex;gap: 15px;margin-bottom: 10px;justify-content: center;}
+        @media (max-width: 650px) {
+            .main-header { font-size: 2.1rem; }
+            .options-block { gap: 15px; flex-direction: column; }
+            .glow-btn { padding: 16px 10px; font-size: 1.05rem; }
+            .container { padding: 10px 5px;}
+        }
+    </style>
+</head>
+<body>
+    <div class="main-header">Typing Practice Tool</div>
+    <div class="tagline">Practice typing in Hindi, English and more — Simple, Fast, and Colorful!</div>
+    <div class="desc-text">
+        Improve your typing skills with fun, glowing lessons. Choose your mode below:<br>
+        <b>Word Typing:</b> Practice each word and key step by step.<br>
+        <b>Paragraph Typing:</b> Type full sentences & paragraphs, level by level!
+    </div>
+    <div class="options-block" id="optionsBlock">
+        <button class="glow-btn" id="wordBtn">Word Typing</button>
+        <button class="glow-btn" id="paraBtn">Paragraph Typing</button>
+    </div>
+    <div class="container" id="practiceContainer">
+        <div class="tab-bar">
+            <div class="tab-btn active" id="tabWord">Word Typing</div>
+            <div class="tab-btn" id="tabPara">Paragraph Typing</div>
+        </div>
+        <!-- Word Typing Section -->
+        <div id="normalTypingSection">
+            <div class="flex-row">
+                <label for="lang_sel">Language:</label>
+                <select id="lang_sel">
+                    <option value="english">English</option>
+                    <option value="hindi">हिन्दी</option>
+                </select>
+                <label for="level_sel">Level:</label>
+                <select id="level_sel">
+                    <option value="beginner">Beginner</option>
+                    <option value="intermediate">Intermediate</option>
+                    <option value="advanced">Advanced</option>
+                </select>
+            </div>
+            <div id="lessonList" class="lesson-list"></div>
+            <div class="practice-block" id="practiceBlock" style="display:none;">
+                <div class="practice-text" id="practiceText"></div>
+                <input type="text" id="inputArea" class="input-area" placeholder="Type here..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+                <div class="stats-block">
+                    <div class="stat" id="statSpeed">Speed: 0 WPM</div>
+                    <div class="stat" id="statAccuracy">Accuracy: 100%</div>
+                    <div class="stat" id="statProgress">Progress: 0%</div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress" id="progressBar" style="width:0%;"></div>
+                </div>
+                <button id="resetBtn">Reset</button>
+            </div>
+        </div>
+        <!-- Paragraph Typing Section -->
+        <div id="paragraphSection" style="display:none;">
+            <div class="lang-select-bar">
+                <label for="paraLanguage">Paragraph Language:</label>
+                <select id="paraLanguage">
+                    <option value="english">English</option>
+                    <option value="hindi">हिन्दी</option>
+                </select>
+            </div>
+            <div class="paragraph-block">
+                <div class="level-status" id="levelStatus"></div>
+                <div class="paragraph-stats">
+                    <div id="paraSpeed">Speed: 0 WPM</div>
+                    <div id="paraAccuracy">Accuracy: 100%</div>
+                    <div id="paraProgress">Progress: 0%</div>
+                </div>
+                <div class="paragraph-text" id="paragraphText"></div>
+                <input type="text" id="paragraphInput" class="paragraph-input" placeholder="Type here..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+                <div style="margin-bottom:8px;">
+                    <button id="paraResetBtn">Reset</button>
+                    <button id="nextLevelBtn" style="display:none;margin-left:10px;">Next Level</button>
+                </div>
+                <div id="resultSummary"></div>
+                <div class="small-ad-block" id="topAdBlock" style="display:none;">
+                    <strong>Ad:</strong> Your Ad will appear here!
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="ad-block"><strong>Ad Space:</strong> Your Ad will appear here!</div>
+    <div class="footer">&copy; 2025 Typing Practice Tool. Free for everyone.</div>
+    <script>
+        // Home page navigation logic
+        const optionsBlock = document.getElementById('optionsBlock');
+        const practiceContainer = document.getElementById('practiceContainer');
+        const tabWord = document.getElementById('tabWord');
+        const tabPara = document.getElementById('tabPara');
+        const normalTypingSection = document.getElementById('normalTypingSection');
+        const paragraphSection = document.getElementById('paragraphSection');
+        document.getElementById('wordBtn').onclick = function() {
+            optionsBlock.style.display = "none";
+            practiceContainer.style.display = "";
+            showWordTyping();
+        };
+        document.getElementById('paraBtn').onclick = function() {
+            optionsBlock.style.display = "none";
+            practiceContainer.style.display = "";
+            showParagraphTyping();
+        };
+        tabWord.onclick = showWordTyping;
+        tabPara.onclick = showParagraphTyping;
+        function showWordTyping() {
+            tabWord.classList.add('active');
+            tabPara.classList.remove('active');
+            normalTypingSection.style.display = "";
+            paragraphSection.style.display = "none";
+        }
+        function showParagraphTyping() {
+            tabPara.classList.add('active');
+            tabWord.classList.remove('active');
+            normalTypingSection.style.display = "none";
+            paragraphSection.style.display = "";
+            loadParagraphLevel(0);
+        }
+
+        // Word Typing Functions
+        const lessons = {
+            english: {
+                beginner: [
+                    {name: "J, F, Space", words: ["J F", "F J", "J F J", "F F J", "J F F", "J F"]},
+                    {name: "U, R, K Keys", words: ["U R K", "R U K", "K K U", "U K R", "K R U", "U U R"]},
+                    {name: "Simple Words", words: ["cat", "dog", "jump", "run", "bird", "fish"]},
+                ],
+                intermediate: [
+                    {name: "Longer Words", words: ["elephant", "banana", "computer", "keyboard", "practice"]},
+                    {name: "Numbers", words: ["123", "456", "789", "321", "654"]},
+                    {name: "Common Sentences", words: ["I can type fast.", "Practice makes perfect.", "Typing is fun!"]},
+                ],
+                advanced: [
+                    {name: "Paragraphs", words: [
+                        "The quick brown fox jumps over the lazy dog.",
+                        "Typing helps improve your speed and accuracy.",
+                        "Consistent practice brings the best results.",
+                    ]},
+                ]
+            },
+            hindi: {
+                beginner: [
+                    {name: "क, म, र Keys", words: ["क म र", "म क र", "र क म", "क क म", "म म क"]},
+                    {name: "Basic Words", words: ["घर", "नाम", "काम", "राम", "कलम", "मकान"]},
+                ],
+                intermediate: [
+                    {name: "अधिक शब्द", words: ["विद्यालय", "मित्र", "पुस्तक", "गाड़ी", "खाना"]},
+                    {name: "सामान्य वाक्य", words: ["मेरा नाम राम है।", "मैं स्कूल जाता हूँ।", "यह एक किताब है।"]},
+                ],
+                advanced: [
+                    {name: "अनुच्छेद", words: [
+                        "अच्छी टाइपिंग से काम जल्दी और सही होता है।",
+                        "नियमित अभ्यास से टाइपिंग में गति और शुद्धता आती है।",
+                    ]},
+                ]
+            }
+        };
+        let selectedLang = "english", selectedLevel = "beginner", selectedLesson = 0;
+        let currentWordIndex = 0, currentWords = [];
+        let startTime = null, totalTyped = 0, correctTyped = 0;
+        const langSel = document.getElementById('lang_sel');
+        const levelSel = document.getElementById('level_sel');
+        const lessonListDiv = document.getElementById('lessonList');
+        const practiceBlock = document.getElementById('practiceBlock');
+        const practiceText = document.getElementById('practiceText');
+        const inputArea = document.getElementById('inputArea');
+        const statSpeed = document.getElementById('statSpeed');
+        const statAccuracy = document.getElementById('statAccuracy');
+        const statProgress = document.getElementById('statProgress');
+        const progressBar = document.getElementById('progressBar');
+        const resetBtn = document.getElementById('resetBtn');
+        function renderLessons() {
+            lessonListDiv.innerHTML = '';
+            const arr = lessons[selectedLang][selectedLevel];
+            arr.forEach((lesson, i) => {
+                const div = document.createElement('div');
+                div.className = 'lesson-item' + (i === selectedLesson ? ' active':'');
+                div.textContent = lesson.name;
+                div.onclick = () => selectLesson(i);
+                lessonListDiv.appendChild(div);
+            });
+        }
+        function selectLesson(idx) {
+            selectedLesson = idx;
+            currentWordIndex = 0;
+            totalTyped = 0;
+            correctTyped = 0;
+            startTime = null;
+            currentWords = lessons[selectedLang][selectedLevel][selectedLesson].words;
+            renderLessons();
+            showPracticeWord();
+            practiceBlock.style.display = "";
+            inputArea.value = "";
+            inputArea.focus();
+            updateStats();
+        }
+        function showPracticeWord() {
+            practiceText.textContent = currentWords[currentWordIndex];
+            inputArea.value = "";
+            inputArea.focus();
+        }
+        function updateStats() {
+            let timeElapsed = startTime ? ((Date.now() - startTime) / 60000) : 0;
+            let wpm = timeElapsed > 0 ? Math.round((totalTyped/5)/timeElapsed) : 0;
+            statSpeed.textContent = "Speed: " + wpm + " WPM";
+            let accuracy = totalTyped > 0 ? Math.round((correctTyped/totalTyped)*100) : 100;
+            statAccuracy.textContent = "Accuracy: " + accuracy + "%";
+            let progress = Math.round(((currentWordIndex)/currentWords.length)*100);
+            statProgress.textContent = "Progress: " + progress + "%";
+            progressBar.style.width = progress + "%";
+        }
+        inputArea.addEventListener('keydown', function(e) {
+            if (e.key === ' ' || e.keyCode === 32) {
+                let expected = currentWords[currentWordIndex];
+                let typed = inputArea.value.trim();
+                if (typed === expected) {
+                    currentWordIndex++;
+                    totalTyped += typed.length+1;
+                    correctTyped += typed.length;
+                    inputArea.value = "";
+                    if (currentWordIndex < currentWords.length) {
+                        showPracticeWord();
+                        updateStats();
+                    } else {
+                        statProgress.textContent = "Progress: 100%";
+                        progressBar.style.width = "100%";
+                        practiceText.textContent = "Lesson Complete!";
+                        inputArea.value = "";
+                    }
+                    e.preventDefault();
+                }
+            }
+        });
+        inputArea.addEventListener('input', () => {
+            if (!startTime) startTime = Date.now();
+            let expected = currentWords[currentWordIndex];
+            let typed = inputArea.value;
+            totalTyped = totalTyped + 1;
+            let correct = 0;
+            for (let i = 0; i < typed.length; i++) {
+                if (typed[i] === expected[i]) correct++;
+            }
+            correctTyped = correctTyped + correct;
+            updateStats();
+        });
+        resetBtn.addEventListener('click', () => {
+            currentWordIndex = 0;
+            totalTyped = 0;
+            correctTyped = 0;
+            startTime = null;
+            showPracticeWord();
+            updateStats();
+        });
+        langSel.addEventListener('change', () => {
+            selectedLang = langSel.value;
+            selectedLesson = 0;
+            currentWordIndex = 0;
+            renderLessons();
+            practiceBlock.style.display = "none";
+        });
+        levelSel.addEventListener('change', () => {
+            selectedLevel = levelSel.value;
+            selectedLesson = 0;
+            currentWordIndex = 0;
+            renderLessons();
+            practiceBlock.style.display = "none";
+        });
+        renderLessons();
+
+        // Paragraph Typing Section with Hindi/English Option
+        const paragraphLevels = {
+            english: [
+                {name: "Level 1 (Easy)", paragraph: "The quick brown fox jumps over the lazy dog. Typing practice helps you learn all key positions on the keyboard."},
+                {name: "Level 2 (Medium)", paragraph: "Consistency is the key to better typing skills. Focus on each word and try to avoid mistakes. Progress comes with time and effort. Improve your typing by practicing daily."},
+                {name: "Level 3 (Hard)", paragraph: "Typing efficiently requires muscle memory, concentration, and regular exercises. Advanced typists master punctuation, numbers, and special characters. Challenge yourself with longer and more complex paragraphs to reach expert speed."},
+                {name: "Level 4 (Expert)", paragraph: "Typing is an essential skill in the digital age. As you progress through harder paragraphs, remember to maintain accuracy while increasing speed. Expert level typing involves handling unfamiliar words, symbols, and adapting to various keyboard layouts. Keep practicing to become a true typing master."}
+            ],
+            hindi: [
+                {name: "Level 1 (आसान)", paragraph: "मेरा नाम राम है। मैं रोज़ स्कूल जाता हूँ। टाइपिंग का अभ्यास करना अच्छा है।"},
+                {name: "Level 2 (मध्यम)", paragraph: "सही टाइपिंग के लिए नियमित अभ्यास जरूरी है। प्रत्येक शब्द को ध्यान से टाइप करें। गलतियाँ कम करने का प्रयास करें।"},
+                {name: "Level 3 (कठिन)", paragraph: "तेज़ टाइपिंग के लिए उंगलियों की गति और सही कुंजियों का प्रयोग महत्वपूर्ण है। सभी अक्षरों, संख्याओं और चिह्नों का अभ्यास करें। लंबे वाक्य और अनुच्छेद टाइप करने से आपकी क्षमता बढ़ती है।"},
+                {name: "Level 4 (विशेषज्ञ)", paragraph: "डिजिटल युग में टाइपिंग एक आवश्यक कौशल है। कठिन अनुच्छेदों को टाइप करते समय गति और शुद्धता बनाए रखें। विशेषज्ञ टाइपिस्ट अलग-अलग कीबोर्ड लेआउट और नए शब्दों को भी आसानी से टाइप करते हैं। लगातार अभ्यास से आप टाइपिंग मास्टर बन सकते हैं।"}
+            ]
+        };
+        let paraLanguage = "english";
+        let paraActiveLevel = 0, paraWordIndex = 0, paraStartTime = null, paraTotalTyped = 0, paraCorrectTyped = 0, paraTimeStart = null;
+        let paraWords = [];
+        const paraLanguageSel = document.getElementById('paraLanguage');
+        const levelStatus = document.getElementById('levelStatus');
+        const paragraphTextDiv = document.getElementById('paragraphText');
+        const paragraphInput = document.getElementById('paragraphInput');
+        const paraSpeedDiv = document.getElementById('paraSpeed');
+        const paraAccuracyDiv = document.getElementById('paraAccuracy');
+        const paraProgressDiv = document.getElementById('paraProgress');
+        const paraResetBtn = document.getElementById('paraResetBtn');
+        const nextLevelBtn = document.getElementById('nextLevelBtn');
+        const resultSummary = document.getElementById('resultSummary');
+        const topAdBlock = document.getElementById('topAdBlock');
+
+        function loadParagraphLevel(level=0) {
+            paraActiveLevel = level;
+            let pObj = paragraphLevels[paraLanguage][level];
+            paraWords = pObj.paragraph.split(' ');
+            paraWordIndex = 0;
+            paraStartTime = null;
+            paraTotalTyped = 0;
+            paraCorrectTyped = 0;
+            paraTimeStart = null;
+            paragraphInput.value = "";
+            renderParagraph();
+            updateParaStats();
+            levelStatus.textContent = pObj.name;
+            resultSummary.innerHTML = "";
+            nextLevelBtn.style.display = "none";
+            topAdBlock.style.display = "none";
+            paragraphInput.disabled = false;
+            paragraphInput.focus();
+        }
+        function renderParagraph() {
+            paragraphTextDiv.innerHTML = "";
+            paraWords.forEach((word, i) => {
+                let span = document.createElement('span');
+                span.textContent = word + ' ';
+                if (i === paraWordIndex) span.classList.add("active-word");
+                else if (i < paraWordIndex) span.classList.add("correct-word");
+                paragraphTextDiv.appendChild(span);
+            });
+        }
+        function updateParaStats() {
+            let timeElapsed = paraStartTime ? ((Date.now() - paraStartTime) / 60000) : 0;
+            let wpm = timeElapsed > 0 ? Math.round((paraTotalTyped/5)/timeElapsed) : 0;
+            paraSpeedDiv.textContent = "Speed: " + wpm + " WPM";
+            let accuracy = paraTotalTyped > 0 ? Math.round((paraCorrectTyped/paraTotalTyped)*100) : 100;
+            paraAccuracyDiv.textContent = "Accuracy: " + accuracy + "%";
+            let progress = Math.round(((paraWordIndex)/paraWords.length)*100);
+            paraProgressDiv.textContent = "Progress: " + progress + "%";
+        }
+        paragraphInput.addEventListener('keydown', function(e){
+            if (e.key === ' ' || e.keyCode === 32) {
+                let expected = paraWords[paraWordIndex];
+                let typed = paragraphInput.value.trim();
+                if (typed === expected) {
+                    paraWordIndex++;
+                    paraTotalTyped += typed.length+1;
+                    paraCorrectTyped += typed.length;
+                    paragraphInput.value = "";
+                    if (!paraStartTime) paraStartTime = Date.now();
+                    if (!paraTimeStart) paraTimeStart = Date.now();
+                    if (paraWordIndex < paraWords.length) {
+                        renderParagraph();
+                        updateParaStats();
+                    } else {
+                        showParagraphResult();
+                        paragraphInput.value = "";
+                        paragraphInput.disabled = true
